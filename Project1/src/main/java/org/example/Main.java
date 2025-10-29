@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.IOException;
 import java.util.Scanner;
 import sun.misc.Signal;
 
@@ -33,6 +34,7 @@ public class Main {
                 break;
             case "INT":
                 Signal.handle(new Signal("INT"), sig -> {
+                    Signal.raise(sig);
                     System.out.println("Rebut SIGINT");
                     System.out.println("Interrupció detectada...");
                     try {
@@ -53,5 +55,19 @@ public class Main {
                 break;
         }
         ProcessBuilder pb = new ProcessBuilder("java", "-cp", ".", "org.example.p2");
+        pb.inheritIO();
+        try {
+            Process p = pb.start();
+            // Give p2 time to set up its signal handlers
+            Thread.sleep(1000);
+            // Send the actual OS signal based on the signal variable
+            ProcessBuilder signalPb = new ProcessBuilder("kill", "-" + signal, String.valueOf(p.pid()));
+            signalPb.start();
+            p.waitFor();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            System.err.println(e.getMessage());
+        }
     }
 }
