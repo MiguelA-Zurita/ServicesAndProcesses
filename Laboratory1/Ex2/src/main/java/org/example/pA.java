@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 public class pA {
     public static void main(String[] args) throws InterruptedException, IOException {
         System.out.println(ProcessHandle.current().pid());
-        ProcessBuilder pb = new ProcessBuilder("java","-cp","target/classes","p2");
+        ProcessBuilder pb = new ProcessBuilder("java","-cp","target/classes","org.example.p2");
         pb.redirectErrorStream(true);
         Process p = pb.start();
         Thread reader = new Thread(() -> {
