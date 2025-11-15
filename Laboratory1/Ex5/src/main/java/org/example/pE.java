@@ -1,0 +1,31 @@
+package org.example;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Scanner;
+
+public class pE {
+    public static void main(String[] args) throws IOException {
+
+        String paraula = "leprechaun";
+
+        ProcessBuilder pb = new ProcessBuilder("java", "-cp", "target/classes", "org.example.pF");
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+
+        OutputStreamWriter osw = new OutputStreamWriter(p.getOutputStream());
+        osw.write(paraula + "\n");
+        osw.flush();
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
